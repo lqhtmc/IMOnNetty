@@ -1,6 +1,6 @@
 package com.sc.netty;
 
-import com.sc.netty.handler.FirstClientHandler;
+import com.sc.netty.handler.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -25,7 +25,7 @@ public class NettyClient {
                 .channel(NioSocketChannel.class)//io模型：定义nio方式
                 .handler(new ChannelInitializer<SocketChannel>() {//定义客户端的业务处理逻辑
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new FirstClientHandler());
+                        socketChannel.pipeline().addLast(new ClientHandler());
                     }
                 })
                 .attr(AttributeKey.newInstance("CilentName"), "NettyClient")//给客户端channel绑定自定义属性

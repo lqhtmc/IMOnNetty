@@ -1,7 +1,10 @@
-package com.sc.netty.codec;
+package com.sc.netty.codec.request;
+
+import com.sc.netty.codec.Command;
+import com.sc.netty.codec.Packet;
 
 public class LoginRequestPacket extends Packet {
-    private Integer userId;
+    private String userId;
 
     private String username;
 
@@ -12,11 +15,11 @@ public class LoginRequestPacket extends Packet {
         return Command.LOGIN_REQUEST;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

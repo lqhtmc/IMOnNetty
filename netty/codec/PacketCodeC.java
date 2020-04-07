@@ -1,5 +1,7 @@
 package com.sc.netty.codec;
 
+import com.sc.netty.codec.request.LoginRequestPacket;
+import com.sc.netty.codec.response.LoginResponsePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -10,13 +12,17 @@ public class PacketCodeC {
     //魔术
     private static final int MAGIC_NUMBER = 0x12345678;
 
+    //编解码器实例
+    public static final PacketCodeC INSTANCE = new PacketCodeC();
+
     /**
      * 编码：将对象编码成二进制流
      * @param packet
      * @return
      */
-    public ByteBuf encode(Packet packet) {
-        ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
+    public ByteBuf encode(ByteBufAllocator allocator, Packet packet) {
+        //ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
+        ByteBuf byteBuf = allocator.ioBuffer();
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());
@@ -56,6 +62,9 @@ public class PacketCodeC {
     Class<? extends  Packet> getRequestType(Byte command) {
         if(command.equals(Command.LOGIN_REQUEST)) {
             return LoginRequestPacket.class;
+        } else if(command.equals(Command.LOGIN_RESPONSE)) {
+            return LoginResponsePacket.class;
         }
+        return null;
     }
 }
