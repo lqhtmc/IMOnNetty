@@ -1,7 +1,9 @@
 package com.sc.netty.codec;
 
 import com.sc.netty.codec.request.LoginRequestPacket;
+import com.sc.netty.codec.request.MessageRequestPacket;
 import com.sc.netty.codec.response.LoginResponsePacket;
+import com.sc.netty.codec.response.MessageResponsePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -64,6 +66,10 @@ public class PacketCodeC {
             return LoginRequestPacket.class;
         } else if(command.equals(Command.LOGIN_RESPONSE)) {
             return LoginResponsePacket.class;
+        } else if(command.equals(Command.MESSAGE_REQUEST)) {
+            return MessageRequestPacket.class;
+        }else if(command.equals(Command.MESSAGE_RESPONSE)) {
+            return MessageResponsePacket.class;
         }
         return null;
     }

@@ -1,7 +1,13 @@
 package com.sc.netty;
 
+import com.sc.netty.codec.PacketCodeC;
+import com.sc.netty.codec.request.MessageRequestPacket;
 import com.sc.netty.handler.ClientHandler;
+import com.sc.netty.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -10,6 +16,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.Scanner;
 
 /**
  * netty客户端
@@ -47,6 +55,8 @@ public class NettyClient {
             public void operationComplete(Future<? super Void> future) throws Exception {
                 if(future.isSuccess()) {
                     System.out.println("客户端连接服务端成功");
+                    Channel channel = ((ChannelFuture)future).channel();
+                    startConsoleThread(channel);
                 } else {
                     System.out.println("客户端连接服务端失败， time = " + System.currentTimeMillis());
                     connect(bootstrap, host, port);
@@ -54,4 +64,28 @@ public class NettyClient {
             }
         });
     }
+
+    /**
+     * 启动一个线程，监听输入窗口的输入
+     * @param channel
+     */
+     public static void startConsoleThread(final Channel channel) {
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                while(!Thread.interrupted()) {
+                    if(LoginUtil.isLogin(channel)) {
+                        System.out.println("请输入消息发送到服务端...");
+                        Scanner sc = new Scanner(System.in);
+                        String msg = sc.nextLine();
+
+                        MessageRequestPacket packet = new MessageRequestPacket();
+                        packet.setMessage(msg);
+                        ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
+                        channel.writeAndFlush(byteBuf);
+                    }
+                }
+            }
+        });
+        t.start();
+     }
 }
