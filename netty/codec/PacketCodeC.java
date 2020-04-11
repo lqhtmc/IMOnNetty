@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBufAllocator;
  */
 public class PacketCodeC {
     //魔术
-    private static final int MAGIC_NUMBER = 0x12345678;
+    public static final int MAGIC_NUMBER = 0x12345678;
 
     //编解码器实例
     public static final PacketCodeC INSTANCE = new PacketCodeC();
@@ -25,6 +25,17 @@ public class PacketCodeC {
     public ByteBuf encode(ByteBufAllocator allocator, Packet packet) {
         //ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
         ByteBuf byteBuf = allocator.ioBuffer();
+        byte[] bytes = Serializer.DEFAULT.serialize(packet);
+        byteBuf.writeInt(MAGIC_NUMBER);
+        byteBuf.writeByte(packet.getVersion());
+        byteBuf.writeByte(Serializer.DEFAULT.getSerializerAlgorithm());
+        byteBuf.writeByte(packet.getCommand());
+        byteBuf.writeInt(bytes.length);
+        byteBuf.writeBytes(bytes);
+        return byteBuf;
+    }
+
+    public ByteBuf encode(ByteBuf byteBuf, Packet packet) {
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
         byteBuf.writeInt(MAGIC_NUMBER);
         byteBuf.writeByte(packet.getVersion());

@@ -1,6 +1,6 @@
 package com.sc.netty;
 
-import com.sc.netty.handler.ServerHandler;
+import com.sc.netty.handler.*;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -31,7 +31,12 @@ public class NettyServer {
                 })
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {//定义后续每条连接的数据读写、业务处理逻辑
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new ServerHandler());
+                        //nioSocketChannel.pipeline().addLast(new ServerHandler());
+                        nioSocketChannel.pipeline().addLast(new SpliterDecoder());
+                        nioSocketChannel.pipeline().addLast(new PacketDecoder());
+                        nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 })
                 .attr(AttributeKey.newInstance("ServerName"), "NettyServer")//给服务端channel定义一些属性，非必须

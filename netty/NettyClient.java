@@ -2,7 +2,7 @@ package com.sc.netty;
 
 import com.sc.netty.codec.PacketCodeC;
 import com.sc.netty.codec.request.MessageRequestPacket;
-import com.sc.netty.handler.ClientHandler;
+import com.sc.netty.handler.*;
 import com.sc.netty.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -33,7 +33,12 @@ public class NettyClient {
                 .channel(NioSocketChannel.class)//io模型：定义nio方式
                 .handler(new ChannelInitializer<SocketChannel>() {//定义客户端的业务处理逻辑
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new ClientHandler());
+                        //socketChannel.pipeline().addLast(new ClientHandler());
+                        socketChannel.pipeline().addLast(new SpliterDecoder());
+                        socketChannel.pipeline().addLast(new PacketDecoder());
+                        socketChannel.pipeline().addLast(new LoginResponseHandler());
+                        socketChannel.pipeline().addLast(new MessageResponseHandler());
+                        socketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 })
                 .attr(AttributeKey.newInstance("CilentName"), "NettyClient")//给客户端channel绑定自定义属性

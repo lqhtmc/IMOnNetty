@@ -1,0 +1,12 @@
+package com.sc.netty.handler;
+
+import com.sc.netty.codec.response.MessageResponsePacket;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+
+public class MessageResponseHandler extends SimpleChannelInboundHandler<MessageResponsePacket> {
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, MessageResponsePacket messageResponsePacket) {
+        System.out.println("客户端收到服务端的响应：" + messageResponsePacket.getMessage());
+    }
+}
