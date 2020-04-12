@@ -10,6 +10,11 @@ import java.util.UUID;
 
 public class LoginResponseHandler extends SimpleChannelInboundHandler<LoginResponsePacket> {
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("客户端连接被关闭...");
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext ctx) {
         System.out.println("客户端开始登录...");
         // 登录请求

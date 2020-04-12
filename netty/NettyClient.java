@@ -3,7 +3,6 @@ package com.sc.netty;
 import com.sc.netty.codec.PacketCodeC;
 import com.sc.netty.codec.request.MessageRequestPacket;
 import com.sc.netty.handler.*;
-import com.sc.netty.util.LoginUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -78,7 +77,7 @@ public class NettyClient {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 while(!Thread.interrupted()) {
-                    if(LoginUtil.isLogin(channel)) {
+                    //if(LoginUtil.isLogin(channel)) {
                         System.out.println("请输入消息发送到服务端...");
                         Scanner sc = new Scanner(System.in);
                         String msg = sc.nextLine();
@@ -87,7 +86,7 @@ public class NettyClient {
                         packet.setMessage(msg);
                         ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
                         channel.writeAndFlush(byteBuf);
-                    }
+                    //}
                 }
             }
         });
